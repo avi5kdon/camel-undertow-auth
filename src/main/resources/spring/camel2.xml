@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <!-- You could also define a traditional camel context here -->
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring" trace="true">
+
+        <route>
+            <from uri="undertow:http://localhost:8082/test/next"/>
+            <log message="${body}"/>
+
+        </route>
+      <route>
+            <from uri="undertow:http://localhost:8083/test/next"/>
+            <process ref="proc"/>
+            <to uri="log:log1?showHeaders=true"/>
+        </route>
+    </camelContext>
+
+    <bean id="proc" class="org.example.Proc"/>
+
+</beans>

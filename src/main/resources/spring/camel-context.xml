@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <!-- You could also define a traditional camel context here -->
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+
+        <route>
+           <from uri="jetty:http://localhost:8082?matchOnUriPrefix=true"/>
+            <onException>
+                <exception>java.net.ConnectException</exception>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <setBody>
+                    <constant>Error connecting to the service</constant>
+                </setBody>
+                <setHeader headerName="CamelHttpResponseCode">
+                    <constant>502</constant>
+                </setHeader>
+            </onException>
+            <to uri="log:text?showHeaders=true"/>
+            <loadBalance inheritErrorHandler="false">
+                <failover maximumFailoverAttempts="1"/>
+                <to uri="http4://169.254.154.214:8081?bridgeEndpoint=true&amp;preserveHostHeader=true"/>
+                <to uri="http4://169.254.154.214:8080?bridgeEndpoint=true&amp;preserveHostHeader=true"/>
+            </loadBalance>
+        </route>
+    </camelContext>
+   <!-- <sslContextParameters
+            id="mySslContext" xmlns="http://camel.apache.org/schema/spring">
+        <keyManagers keyPassword="keyPassword">
+            <keyStore resource="/users/home/server/keystore.jks" password="keystorePassword"/>
+        </keyManagers>
+        <trustManagers>
+            <keyStore resource="/users/home/server/truststore.jks" password="truststorepassword"/>
+        </trustManagers>
+    </sslContextParameters>-->
+<bean id="proc" class="org.example.Proc"/>
+</beans>
