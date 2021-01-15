@@ -57,3 +57,4 @@ Once the container image has been built and deployed in OpenShift, the integrati
 The test is disabled by default and has to be enabled using `-Dtest`. Open Source Community documentation at [Integration Testing](https://fabric8.io/guide/testing.html) and [Fabric8 Arquillian Extension](https://fabric8.io/guide/arquillian.html) provide more information on writing full fledged black box integration tests for OpenShift. 
 
 # camel-undertow-auth
+# camel-undertow-auth-servlet
